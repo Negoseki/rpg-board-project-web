@@ -11,7 +11,10 @@ class SocketClient {
   ): Promise<void> {
     return new Promise((resolve) => {
       const urlParams = new URLSearchParams(params).toString();
-      this.socket = io(`http://localhost:3000${namespace}?${urlParams}`);
+      this.socket = io(
+        `${process.env.REACT_APP_API_URL}${namespace}?${urlParams}`,
+        { extraHeaders: { 'X-Api-Key': process.env.REACT_APP_API_KEY } }
+      );
       this.socket.on('connect', () => {
         resolve();
         console.log('Connected to Socket.io server');

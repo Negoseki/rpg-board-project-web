@@ -4,13 +4,16 @@ import socket from '../socket';
 import { boardActions } from './board.slice';
 import { dragDropActions } from './drag-drop.slice';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = process.env.REACT_APP_API_URL;
+const API_KEY = process.env.REACT_APP_API_KEY;
 const TEMP_ID = 'figure-temp-id';
 
 export const fetchBoardData = (): AppThunkAction => {
   return async (dispatch, getState) => {
     const fetchData = async (boardId: string) => {
-      const response = await fetch(`${API_URL}/board/${boardId}`);
+      const response = await fetch(`${API_URL}/board/${boardId}`, {
+        headers: { 'X-Api-Key': API_KEY },
+      });
 
       if (!response.ok) {
         throw new Error('Could not fetch cart data!');

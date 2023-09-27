@@ -5,7 +5,7 @@ import { FigureState } from '../../models/types/store/figure-state.type';
 import { PositionState } from '../../models/types/store/position-state.type';
 
 const initialState: BoardStateType = {
-  id: '6504a410cd3345a537f2de71',
+  id: '6510891dad739a8f177f583a',
   tileSize: 48,
   board: Array(50).fill(Array(50).fill(0)),
   figures: {},
