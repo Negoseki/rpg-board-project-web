@@ -1,20 +1,16 @@
+import { AppDispatch, AppThunkAction } from '@/store/redux';
 import { AnyAction } from '@reduxjs/toolkit';
 import { Socket, io } from 'socket.io-client';
-import { AppDispatch, AppThunkAction } from '../redux';
 
 class SocketClient {
   private socket?: Socket;
 
-  connect(
-    namespace: string,
-    params: Record<string, string> = {}
-  ): Promise<void> {
+  connect(namespace: string, params: Record<string, string> = {}): Promise<void> {
     return new Promise((resolve) => {
       const urlParams = new URLSearchParams(params).toString();
-      this.socket = io(
-        `${process.env.REACT_APP_API_URL}${namespace}?${urlParams}`,
-        { extraHeaders: { 'X-Api-Key': process.env.REACT_APP_API_KEY } }
-      );
+      this.socket = io(`${process.env.REACT_APP_API_URL}${namespace}?${urlParams}`, {
+        extraHeaders: { 'X-Api-Key': process.env.REACT_APP_API_KEY },
+      });
       this.socket.on('connect', () => {
         resolve();
         console.log('Connected to Socket.io server');

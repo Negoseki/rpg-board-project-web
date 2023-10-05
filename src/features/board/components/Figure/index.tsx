@@ -1,21 +1,17 @@
 import { FC, MouseEvent } from 'react';
 import { useSelector } from 'react-redux';
-import { AppState } from '../../models/types/store/app-state.type';
-import { DragDropStateType } from '../../models/types/store/drag-drop-state.type';
-import { FigureState } from '../../models/types/store/figure-state.type';
-import { useAppDispatch } from '../../store/redux';
-import { placeFigure } from '../../store/redux/board.actions';
-import { dragDropActions } from '../../store/redux/drag-drop.slice';
+import { AppState } from '@/models/types/store/app-state.type';
+import { DragDropStateType } from '@/models/types/store/drag-drop-state.type';
+import { FigureState } from '@/models/types/store/figure-state.type';
+import { useAppDispatch } from '@/store/redux';
+import { placeFigure } from '@/store/redux/board';
+import { dragDropActions } from '@/store/redux/drag-drop';
 
-const Figure: FC<{ figure: FigureState }> = ({ figure, ...props }) => {
+const Figure: FC<{ figure: FigureState }> = ({ figure }) => {
   const dispatch = useAppDispatch();
-  const dragDropState = useSelector<AppState, DragDropStateType>(
-    (state) => state.dragDrop
-  );
+  const dragDropState = useSelector<AppState, DragDropStateType>((state) => state.dragDrop);
 
-  const tileSize = useSelector<AppState, number>(
-    (state) => state.board.tileSize
-  );
+  const tileSize = useSelector<AppState, number>((state) => state.board.tileSize);
 
   const figureSize = (figure.size || 1) * tileSize;
   let calcX = figure.position.x * tileSize;
@@ -48,12 +44,7 @@ const Figure: FC<{ figure: FigureState }> = ({ figure, ...props }) => {
         top: calcY,
       }}
     >
-      <img
-        width={figureSize}
-        height={figureSize}
-        src={figure.imageUrl}
-        alt={figure.name}
-      />
+      <img width={figureSize} height={figureSize} src={figure.imageUrl} alt={figure.name} />
     </div>
   );
 };

@@ -1,6 +1,6 @@
+import { useAppDispatch } from '@/store/redux';
+import { addTempFigure } from '@/store/redux/board';
 import { FC } from 'react';
-import { useAppDispatch } from '../../store/redux';
-import { addTempFigure } from '../../store/redux/board.actions';
 
 const ActionMenu: FC = () => {
   const dispatch = useAppDispatch();
@@ -12,7 +12,7 @@ const ActionMenu: FC = () => {
           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQqFUZWvui9UG46DRy-9iTi1_qsuyiGJqmMA&usqp=CAU',
         name: 'warrior',
         size: 1,
-      })
+      }),
     );
   };
 

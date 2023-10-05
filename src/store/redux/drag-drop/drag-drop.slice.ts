@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { DragDropStateType } from '../../models/types/store/drag-drop-state.type';
-import { FigureState } from '../../models/types/store/figure-state.type';
-import { PositionState } from '../../models/types/store/position-state.type';
+import { DragDropStateType } from '../../../models/types/store/drag-drop-state.type';
+import { FigureState } from '../../../models/types/store/figure-state.type';
+import { PositionState } from '../../../models/types/store/position-state.type';
 
 const initialState: DragDropStateType = {
   currentPosition: {

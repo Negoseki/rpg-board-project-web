@@ -1,16 +1,22 @@
-import { useEffect } from 'react';
-import Board from './components/Board';
-import { useAppDispatch } from './store/redux';
-import { fetchBoardData } from './store/redux/board.actions';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { RouterProvider } from 'react-router-dom';
+import router from './routes';
 
 function App() {
-  const dispatch = useAppDispatch();
-  
-  useEffect(() => {
-    dispatch(fetchBoardData());
-  }, [dispatch]);
-
-  return <Board />;
+  return (
+    <Auth0Provider
+      domain={process.env.REACT_APP_AUTH0_DOMAIN}
+      clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+      useRefreshTokens={true}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        ui_locales: 'pt-BR',
+        audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+      }}
+    >
+      <RouterProvider router={router} />
+    </Auth0Provider>
+  );
 }
 
 export default App;
