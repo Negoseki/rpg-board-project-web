@@ -5,7 +5,13 @@ import { Navigate, RouteObject } from 'react-router-dom';
 const privateRoutes: RouteObject = {
   path: '/',
   element: <RootPrivatePageLayout />,
-  children: [{ path: '', element: <Navigate to='/board' /> }, boardRoutes],
+  children: [
+    { path: '', element: <Navigate to='/board' /> },
+    {
+      path: 'board',
+      children: boardRoutes,
+    },
+  ],
 };
 
 export { privateRoutes };

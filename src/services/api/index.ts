@@ -1,68 +1,70 @@
-const API_URL = process.env.REACT_APP_API_URL;
-let authToken: string | null = null;
+export { default as api } from './base.api';
 
-const handleErrors = (response: Response): Response => {
-  if (!response.ok) {
-    throw Error(response.statusText);
-  }
-  return response;
-};
+// const API_URL = process.env.REACT_APP_API_URL;
+// let authToken: string | null = null;
 
-const commonHeaders = (): Record<string, string> => {
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
+// const handleErrors = (response: Response): Response => {
+//   if (!response.ok) {
+//     throw Error(response.statusText);
+//   }
+//   return response;
+// };
 
-  if (authToken) {
-    headers['Authorization'] = `Bearer ${authToken}`;
-  }
+// const commonHeaders = (): Record<string, string> => {
+//   const headers: Record<string, string> = {
+//     'Content-Type': 'application/json',
+//   };
 
-  return headers;
-};
+//   if (authToken) {
+//     headers['Authorization'] = `Bearer ${authToken}`;
+//   }
 
-const setAuthToken = (token: string) => {
-  authToken = token;
-};
+//   return headers;
+// };
 
-const get = async <T>(url: string): Promise<T> => {
-  try {
-    const response = await fetch(`${API_URL}${url}`, {
-      headers: commonHeaders(),
-    });
-    handleErrors(response);
+// const setAuthToken = (token: string) => {
+//   authToken = token;
+// };
 
-    const data = await response.json();
+// const get = async <T>(url: string): Promise<T> => {
+//   try {
+//     const response = await fetch(`${API_URL}${url}`, {
+//       headers: commonHeaders(),
+//     });
+//     handleErrors(response);
 
-    return data;
-  } catch (e) {
-    console.error('API Error:', e);
-    throw e;
-  }
-};
+//     const data = await response.json();
 
-const post = async <T, K = object>(uri: string, data: K): Promise<T> => {
-  try {
-    const response = await fetch(`${API_URL}${uri}`, {
-      method: 'POST',
-      headers: commonHeaders(),
-      body: JSON.stringify(data),
-    });
+//     return data;
+//   } catch (e) {
+//     console.error('API Error:', e);
+//     throw e;
+//   }
+// };
 
-    handleErrors(response);
+// const post = async <T, K = object>(uri: string, data: K): Promise<T> => {
+//   try {
+//     const response = await fetch(`${API_URL}${uri}`, {
+//       method: 'POST',
+//       headers: commonHeaders(),
+//       body: JSON.stringify(data),
+//     });
 
-    const responseJson = await response.json();
+//     handleErrors(response);
 
-    return responseJson;
-  } catch (e) {
-    console.error('API Error:', e);
-    throw e;
-  }
-};
+//     const responseJson = await response.json();
 
-const apiService = {
-  setAuthToken,
-  get,
-  post,
-};
+//     return responseJson;
+//   } catch (e) {
+//     console.error('API Error:', e);
+//     throw e;
+//   }
+// };
 
-export default apiService;
+// const apiService = {
+//   setAuthToken,
+//   get,
+//   post,
+// };
+
+// export default apiService;
