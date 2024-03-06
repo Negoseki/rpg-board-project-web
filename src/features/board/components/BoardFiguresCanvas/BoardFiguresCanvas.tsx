@@ -1,5 +1,13 @@
 import { useAppSelector } from '@/store/store';
-import { MouseEvent, ReactElement, useEffect, useMemo, useReducer, useRef } from 'react';
+import {
+  MouseEvent,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetBoardQuery, useUpdateBoardFigureMutation } from '../../api/board.api';
 import { BoardFigures } from '../../types';
@@ -34,11 +42,44 @@ export const BoardFiguresCanvas = (): ReactElement => {
   const boardConfig = useAppSelector((state) => state.board);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [dragOpts, dispatch] = useReducer(dragReducer, dragInitial);
+  // @TODO: Implement board type select
+  const boardType = 'hexagonal';
 
   const figures = useMemo<BoardFigures>(
     () =>
       ((board && Object.values(board.figures.entities).filter((v) => !!v)) as BoardFigures) || [],
     [board?.figures.entities],
+  );
+
+  const calculatePosition = useCallback(
+    (position: { x: number; y: number }): [number, number] => {
+      const halfSize = boardConfig.tileSize / 2;
+      if (boardType === 'hexagonal') {
+        return [
+          position.x * boardConfig.tileSize + halfSize * (position.y % 2),
+          position.y * (halfSize + halfSize / 2),
+        ];
+      }
+      return [position.x * boardConfig.tileSize, position.y * boardConfig.tileSize];
+    },
+    [boardType, boardConfig.tileSize],
+  );
+
+  const calculateGrid = useCallback(
+    (position: { x: number; y: number }, figureSize: number): { x: number; y: number } => {
+      const totalSize = figureSize * boardConfig.tileSize;
+      const halfSize = totalSize / 2;
+      if (boardType === 'hexagonal') {
+        const y = Math.round((position.y - halfSize) / (halfSize + halfSize / 2));
+        const x = Math.round((position.x - halfSize - halfSize * (y % 2)) / totalSize);
+        return { x, y };
+      }
+
+      const x = Math.round((position.x - halfSize) / totalSize);
+      const y = Math.round((position.y - halfSize) / totalSize);
+      return { x, y };
+    },
+    [boardType, boardConfig.tileSize],
   );
 
   // Correct board size
@@ -87,10 +128,7 @@ export const BoardFiguresCanvas = (): ReactElement => {
         if (figure === dragOpts.item) {
           continue;
         }
-        const [x, y] = [
-          figure.position.x * boardConfig.tileSize,
-          figure.position.y * boardConfig.tileSize,
-        ];
+        const [x, y] = calculatePosition(figure.position);
 
         imageDraws.push(loadImage(figure.imageUrl));
         try {
@@ -122,16 +160,16 @@ export const BoardFiguresCanvas = (): ReactElement => {
       return;
     }
     const rect = canvas.getBoundingClientRect();
+
     const position = {
       x: ((ev.clientX - rect.left) / (rect.right - rect.left)) * canvas.width,
       y: ((ev.clientY - rect.top) / (rect.bottom - rect.top)) * canvas.height,
     };
     for (const figure of figures) {
       const figureSize = figure.size * boardConfig.tileSize;
-      const [figureX, figureY] = [
-        figure.position.x * boardConfig.tileSize,
-        figure.position.y * boardConfig.tileSize,
-      ];
+
+      const [figureX, figureY] = calculatePosition(figure.position);
+
       if (
         position.x >= figureX &&
         position.x <= figureX + figureSize &&
@@ -156,11 +194,8 @@ export const BoardFiguresCanvas = (): ReactElement => {
     }
     const size = dragOpts.item.size;
     const position = dragOpts.currentPosition;
-    const figureSize = size * boardConfig.tileSize;
-    const x = Math.round((position.x - figureSize / 2) / boardConfig.tileSize);
-    const y = Math.round((position.y - figureSize / 2) / boardConfig.tileSize);
 
-    updateFigure({ id, figure: { ...dragOpts.item, position: { x, y } } });
+    updateFigure({ id, figure: { ...dragOpts.item, position: calculateGrid(position, size) } });
     dispatch({ type: 'end' });
   };
 
